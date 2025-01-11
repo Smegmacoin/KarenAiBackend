@@ -16,21 +16,22 @@ def home():
 # /chat endpoint to handle AI chat
 @app.route("/chat", methods=["POST"])
 def chat():
+    # Get the user's message from the request
+    user_message = request.json.get("message")
+    if not user_message:
+        return jsonify({"error": "No message provided"}), 400
+
     try:
-        # Get the user's message from the request
-        user_message = request.json.get("message")
-        if not user_message:
-            return jsonify({"error": "No message provided"}), 400
-
         # Use OpenAI API to generate a response
-        response = openai.Completion.create(
-            engine="text-davinci-003",  # Update based on your chosen model
-            prompt=f"You are Karen, a flirty AI focused on SpongeBob SquarePants. Respond to this message: {user_message}",
-            max_tokens=150
+        response = openai.ChatCompletion.create(
+            model="gpt-4",  # You can change this to the desired model, e.g., "gpt-3.5-turbo"
+            messages=[
+                {"role": "system", "content": "You are Karen, a flirty AI focused on SpongeBob SquarePants."},
+                {"role": "user", "content": user_message}
+            ]
         )
-
         # Return the response
-        return jsonify({"response": response['choices'][0]['text'].strip()})
+        return jsonify({"response": response['choices'][0]['message']['content']})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
