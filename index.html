@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karen AI Chat</title>
+</head>
+<body>
+    <h1>Chat with Karen AI</h1>
+
+    <input type="text" id="userMessage" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+
+    <p id="response"></p>
+
+    <script>
+        // Function to handle sending the message to the backend
+        function sendMessage() {
+            const userMessage = document.getElementById('userMessage').value;
+            const url = 'https://karenai-3cf70a46a331.herokuapp.com/chat'; // Update with your actual backend URL
+
+            // Sending the POST request to the backend
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: userMessage }) // Send the message as JSON
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the response from the backend
+                document.getElementById('response').innerText = data.response || 'No response from Karen.';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('response').innerText = 'There was an error.';
+            });
+        }
+    </script>
+</body>
+</html>
