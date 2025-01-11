@@ -8,12 +8,10 @@ app = Flask(__name__)
 # Set OpenAI API key from environment variables
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# Root route to handle the homepage
 @app.route("/", methods=["GET"])
 def home():
     return "Welcome to Karen AI! Use the /chat endpoint to interact with Karen."
 
-# /chat endpoint to handle AI chat
 @app.route("/chat", methods=["POST"])
 def chat():
     # Get the user's message from the request
@@ -22,15 +20,14 @@ def chat():
         return jsonify({"error": "No message provided"}), 400
 
     try:
-        # Use OpenAI API to generate a response
+        # Use the latest OpenAI API method
         response = openai.ChatCompletion.create(
-            model="gpt-4",  # You can change this to the desired model, e.g., "gpt-3.5-turbo"
+            model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are Karen, a flirty AI focused on SpongeBob SquarePants."},
                 {"role": "user", "content": user_message}
             ]
         )
-        # Return the response
         return jsonify({"response": response['choices'][0]['message']['content']})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
