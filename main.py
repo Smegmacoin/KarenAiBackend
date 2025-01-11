@@ -1,12 +1,3 @@
-import os
-import openai
-from flask import Flask, request, jsonify
-
-app = Flask(__name__)
-
-# OpenAI API Key
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
 @app.route("/chat", methods=["POST"])
 def chat():
     user_message = request.json.get("message")
@@ -24,6 +15,3 @@ def chat():
         return jsonify({"response": response['choices'][0]['message']['content']})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
