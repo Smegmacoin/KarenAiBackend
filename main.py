@@ -22,16 +22,14 @@ def chat():
         return jsonify({"error": "No message provided"}), 400
 
     try:
-        # Use OpenAI API to generate a response
-        response = openai.ChatCompletion.create(
+        # Use OpenAI API to generate a response using the new API format
+        response = openai.Completion.create(
             model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are Karen, a flirty AI focused on SpongeBob SquarePants."},
-                {"role": "user", "content": user_message}
-            ]
+            prompt=user_message,  # Use the prompt parameter for the message
+            max_tokens=100
         )
         # Return the response
-        return jsonify({"response": response['choices'][0]['message']['content']})
+        return jsonify({"response": response['choices'][0]['text'].strip()})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
